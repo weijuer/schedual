@@ -64,6 +64,7 @@ const thisMonth = () => {
 }
 
 const update = () => {
+  console.log('update')
   const { year, month } = state.date
   const date = new Date(year, month, 1)
   emit('update:modelValue', date.getTime())
@@ -94,6 +95,7 @@ const update = () => {
     cursor: pointer;
     will-change: transform;
     transition: transform 200ms;
+
     &:active {
       transform: scale(0.8);
     }
