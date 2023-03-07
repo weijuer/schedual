@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore, acceptHMRUpdate } from 'pinia';
 
 export const useMemberStore = defineStore({
   id: 'member',
@@ -6,7 +6,7 @@ export const useMemberStore = defineStore({
     memberList: [],
   }),
   getters: {
-    members: (state) => {
+    members(state) {
       return state.memberList;
     },
   },
@@ -22,6 +22,14 @@ export const useMemberStore = defineStore({
 
       this.memberList.unshift(member)
     },
+    changeMember(member) {
+      this.memberList = this.memberList.map((item) => {
+        if (item.id === member.id) {
+          item.name = member.name
+        }
+        return item
+      })
+    },
     removeMember(id) {
       this.memberList = this.memberList.filter(member => member.id !== id)
     }
@@ -30,3 +38,7 @@ export const useMemberStore = defineStore({
     enabled: true,
   },
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useMemberStore, import.meta.hot))
+}

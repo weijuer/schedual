@@ -4,17 +4,17 @@ const routes = [
     {
         path: '/',
         name: 'home',
-        component: import('../views/Home.vue'),
+        component:()=> import('../views/Home.vue'),
     },
     {
         path: '/member',
         name: 'member',
-        component: import('../views/Member.vue'),
+        component:()=> import('../views/Member.vue'),
     },
     {
         path: '/schedual',
         name: 'schedual',
-        component: import('../views/Schedual.vue'),
+        component:()=> import('../views/Schedual.vue'),
     }
 ]
 
