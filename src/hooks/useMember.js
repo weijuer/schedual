@@ -1,23 +1,19 @@
 import { computed } from 'vue'
 import useCalendar from './useCalendar'
+import { useMemberStore } from '../stores'
 
 /**
  * rules: 0.当月休息6/7天； 1.昨晚晚班+第二天早班；2.连续休息2天要上早班
  */
-export default function useMember(members) {
+export default function useMember() {
   const { getCalendar } = useCalendar()
+  const memberStore = useMemberStore()
 
-  const finalMembers = computed(() =>
-    members.map((member, index) => {
-      return {
-        id: index,
-        name: member,
-        morning: [],
-        afternoon: [],
-        rest: [],
-      }
-    })
-  )
+  // randomMember
+  const randomMember = (day, type) => {
+    const { members } = memberStore
+    return members[Math.round(Math.random() * (members.length - 1))]
+  }
 
   // date
   const getCalendarDates = (calendar, index) => {
@@ -49,11 +45,17 @@ export default function useMember(members) {
 
   // rest members
   const getRestMembers = (calendar, index) => {
+    const { members } = memberStore
+
+    console.log('getRestMembers')
+
     const week = calendar.reduce((pre, current) => {
-      pre[current.weekDayText] = finalMembers.value.map((member) => {
-        if (member.rest.length <= 7) {
-          return member.name
-        }
+      pre[current.weekDayText] = members.map((member) => {
+        // if (member.rest.length <= 7) {
+        //   return member.name
+        // }
+
+        return randomMember().name
       })
       return pre
     }, {})

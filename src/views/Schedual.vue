@@ -7,12 +7,9 @@ import useMember from '../hooks/useMember'
 const tableRef = ref()
 const data = ref([])
 const timestamp = ref(Date.now())
-const members = ref(['张三', '李四', '王五', '赵六'])
-
-const onCreate = (label) => label
 
 const { exportExcel } = useExcel()
-const { getMemberData } = useMember(members.value)
+const { getMemberData } = useMember()
 
 watch(
   timestamp,
