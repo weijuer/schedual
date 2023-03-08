@@ -4,10 +4,16 @@ const props = defineProps({
 })
 const emit = defineEmits(['negative-click', 'positive-click'])
 
-const title = computed(() => (props.source.id !== 0 ? '编辑' : '新建'))
 const formRef = ref()
-const formModel = reactive({
+const defaultValueRef = () => ({
   name: null,
+  extra: '',
+})
+
+const attrs = useAttrs()
+const state = reactive({
+  title: computed(() => (props.source.id ? '编辑' : '新建')),
+  formModel: defaultValueRef(),
 })
 
 const rules = {
@@ -18,14 +24,25 @@ const rules = {
   },
 }
 
+function resetFields() {
+  formRef.value.restoreValidation()
+  state.formModel = Object.assign(state.formModel, defaultValueRef())
+}
+
+watch(
+  () => attrs.show,
+  (show) => {
+    if (formRef.value) {
+      resetFields()
+    }
+  }
+)
+
 const onPositiveHandle = (e) => {
   e.preventDefault()
   formRef.value?.validate((errors) => {
     if (!errors) {
-      console.log(formModel)
-      emit('positive-click', formModel)
-      formModel.name = ''
-      console.log('Valid')
+      emit('positive-click', state.formModel)
     } else {
       console.log(errors)
     }
@@ -34,11 +51,16 @@ const onPositiveHandle = (e) => {
 </script>
 
 <template>
-  <n-modal v-bind="$attrs" :show-icon="false" preset="dialog" :title="title">
+  <n-modal
+    v-bind="$attrs"
+    :show-icon="false"
+    preset="dialog"
+    :title="state.title"
+  >
     <n-form
       class="w-form"
       ref="formRef"
-      :model="formModel"
+      :model="state.formModel"
       :rules="rules"
       label-placement="left"
       :label-width="80"
@@ -46,12 +68,15 @@ const onPositiveHandle = (e) => {
       size="medium"
     >
       <n-form-item label="姓名" path="name">
-        <n-input v-model:value="formModel.name" placeholder="请输入姓名" />
+        <n-input
+          v-model:value="state.formModel.name"
+          placeholder="请输入姓名"
+        />
       </n-form-item>
       <n-form-item label="备注" path="extra">
         <n-input
           type="textarea"
-          v-model:value="formModel.extra"
+          v-model:value="state.formModel.extra"
           placeholder="请输入备注"
         />
       </n-form-item>

@@ -37,7 +37,7 @@ const createColumns = ({ onEditMember, onRemoveMember }) => {
             NButton,
             {
               size: 'small',
-              onClick: () => onRemoveMember(row.id),
+              onClick: () => onRemoveMember(row),
             },
             { default: () => 'Remove' }
           ),
@@ -63,6 +63,11 @@ const columns = createColumns({
   onRemoveMember,
 })
 
+const onAdd = () => {
+  source.value = {}
+  showModal.value = true
+}
+
 const onPositiveClick = (model) => {
   memberStore.addMember(model.name)
   showModal.value = false
@@ -74,7 +79,7 @@ const onNegativeClick = () => {
 
 <template>
   <n-space class="top-space">
-    <n-button @click="showModal = true" strong secondary round type="info">
+    <n-button @click="onAdd" strong secondary round type="info">
       新建
     </n-button>
   </n-space>
