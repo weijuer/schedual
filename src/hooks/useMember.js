@@ -11,8 +11,27 @@ export default function useMember() {
 
   // randomMember
   const randomMember = (day, type) => {
-    const { members } = memberStore
-    return members[Math.round(Math.random() * (members.length - 1))]
+    const { members, restDays } = memberStore
+    const member = members[Math.round(Math.random() * (members.length - 1))]
+
+    console.log('randomMember: (day: %s)', day)
+
+    // init
+    if (member[type].length === 0) {
+      member[type].push(day)
+      memberStore.changeMember(member)
+      return member
+    }
+
+    if (member[type].length > 0 && !member[type].includes(day)) {
+      if (member[type].length <= restDays) {
+        member[type].push(day)
+        memberStore.changeMember(member)
+        return member
+      }
+    } else {
+      return randomMember(day, type)
+    }
   }
 
   // date
@@ -47,16 +66,12 @@ export default function useMember() {
   const getRestMembers = (calendar, index) => {
     const { members } = memberStore
 
-    console.log('getRestMembers')
+    console.log('getRestMembers', index)
 
     const week = calendar.reduce((pre, current) => {
-      pre[current.weekDayText] = members.map((member) => {
-        // if (member.rest.length <= 7) {
-        //   return member.name
-        // }
+      const member = randomMember(current.day, 'rest')
+      pre[current.weekDayText] = member.name
 
-        return randomMember().name
-      })
       return pre
     }, {})
 
