@@ -14,7 +14,7 @@ export default function useMember() {
     const { members, restDays } = memberStore
     const member = members[Math.round(Math.random() * (members.length - 1))]
 
-    console.log('randomMember: (day: %s)', day)
+    console.log('randomMember: (day: %s)', day, member)
 
     // init
     if (member[type].length === 0) {
@@ -64,13 +64,12 @@ export default function useMember() {
 
   // rest members
   const getRestMembers = (calendar, index) => {
-    const { members } = memberStore
-
     console.log('getRestMembers', index)
 
     const week = calendar.reduce((pre, current) => {
       const member = randomMember(current.day, 'rest')
-      pre[current.weekDayText] = member.name
+      console.log(index, member)
+      pre[current.weekDayText] = member?.name
 
       return pre
     }, {})
