@@ -16,6 +16,8 @@ export default function useMember() {
 
     console.log('randomMember: (day: %s)', day, member)
 
+    if (!member) return
+
     // init
     if (member[type].length === 0) {
       member[type].push(day)
@@ -24,7 +26,7 @@ export default function useMember() {
     }
 
     if (member[type].length > 0 && !member[type].includes(day)) {
-      if (member[type].length <= restDays) {
+      if (member[type].length < restDays) {
         member[type].push(day)
         memberStore.changeMember(member)
         return member
@@ -93,6 +95,7 @@ export default function useMember() {
   const getMemberData = (timestamp) => {
     const data = []
     const calendarList = getCalendar(timestamp)
+    // memberStore.$reset()
 
     for (let i = 0; i < 6; i++) {
       // line
