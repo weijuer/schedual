@@ -10,7 +10,7 @@ export default function useMember() {
   const memberStore = useMemberStore()
 
   // randomMember
-  const randomMember = (day, type) => {
+  const randomMember = (day, type, num = 1) => {
     const { members, restDays } = memberStore
     const member = members[Math.round(Math.random() * (members.length - 1))]
 
@@ -78,7 +78,7 @@ export default function useMember() {
         if (isCurrentMonth) {
           const member = randomMember(day, 'rest')
           console.log(index, member)
-          pre[weekDayText] = member.name
+          pre[weekDayText] = member?.name
         }
 
         return pre
@@ -105,7 +105,7 @@ export default function useMember() {
   const getMemberData = (timestamp) => {
     const data = []
     const calendarList = getCalendar(timestamp)
-    memberStore.$reset()
+    memberStore.resetMonthMembers()
 
     for (let i = 0; i < 6; i++) {
       // line
