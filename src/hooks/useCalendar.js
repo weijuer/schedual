@@ -1,5 +1,5 @@
 // https://date-fns.org/v2.29.3/docs/isToday
-import { getDay, getDaysInMonth, isToday, isThisMonth } from 'date-fns/esm'
+import { isToday, isThisMonth } from 'date-fns/esm'
 
 export default function useCalendar() {
   const getCalendar = (timestamp) => {
@@ -28,6 +28,7 @@ export default function useCalendar() {
         weekDayText: weekDayTexts[weekDay],
         isToday: isToday(date),
         isThisMonth: isThisMonth(date),
+        isCurrentMonth: tempDate.getMonth() === date.getMonth(),
       })
     }
     return calendar

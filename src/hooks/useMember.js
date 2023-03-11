@@ -30,6 +30,8 @@ export default function useMember() {
         member[type].push(day)
         memberStore.changeMember(member)
         return member
+      } else {
+        return randomMember(day, type)
       }
     } else {
       return randomMember(day, type)
@@ -38,10 +40,13 @@ export default function useMember() {
 
   // date
   const getCalendarDates = (calendar, index) => {
-    const week = calendar.reduce((pre, current) => {
-      pre[current.weekDayText] = current.day
-      return pre
-    }, {})
+    const week = calendar.reduce(
+      (pre, { isCurrentMonth, weekDayText, day }) => {
+        pre[weekDayText] = isCurrentMonth ? day : ''
+        return pre
+      },
+      {}
+    )
 
     return {
       ...week,
@@ -68,13 +73,18 @@ export default function useMember() {
   const getRestMembers = (calendar, index) => {
     console.log('getRestMembers', index)
 
-    const week = calendar.reduce((pre, current) => {
-      const member = randomMember(current.day, 'rest')
-      console.log(index, member)
-      pre[current.weekDayText] = member?.name
+    const week = calendar.reduce(
+      (pre, { isCurrentMonth, weekDayText, day }) => {
+        if (isCurrentMonth) {
+          const member = randomMember(day, 'rest')
+          console.log(index, member)
+          pre[weekDayText] = member.name
+        }
 
-      return pre
-    }, {})
+        return pre
+      },
+      {}
+    )
 
     return {
       ...week,
@@ -95,7 +105,7 @@ export default function useMember() {
   const getMemberData = (timestamp) => {
     const data = []
     const calendarList = getCalendar(timestamp)
-    // memberStore.$reset()
+    memberStore.$reset()
 
     for (let i = 0; i < 6; i++) {
       // line

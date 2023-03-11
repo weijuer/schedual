@@ -3,6 +3,7 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 export const useMemberStore = defineStore({
   id: 'member',
   state: () => ({
+    username: '',
     rest: 7,
     memberList: [],
   }),
@@ -37,9 +38,21 @@ export const useMemberStore = defineStore({
     removeMember(id) {
       this.memberList = this.memberList.filter((member) => member.id !== id)
     },
+    resetMonthMembers() {
+      this.memberList = this.memberList.map((member) => ({
+        ...member,
+        morning: [],
+        afternoon: [],
+        rest: [],
+      }))
+    },
   },
   persist: {
     enabled: true,
+    strategies: [
+      { storage: sessionStorage, paths: ['username', 'rest'] },
+      { storage: localStorage, paths: ['memberList'] },
+    ],
   },
 })
 
