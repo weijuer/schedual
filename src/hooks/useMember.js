@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import useCalendar from './useCalendar'
 import { useMemberStore } from '../stores'
-import { sampleSize } from '../utils'
+import { sample, sampleSize } from '../utils'
 
 /**
  * rules: 0.当月休息6/7天； 1.昨晚晚班+第二天早班；2.连续休息2天要上早班
@@ -10,33 +10,44 @@ export default function useMember() {
   const { getCalendar } = useCalendar()
   const memberStore = useMemberStore()
 
-  // randomMember
-  const randomMember = (day, type, num = 1) => {
-    const { members, restDays } = memberStore
-    const member = sampleSize(members, num)
-
-    console.log('randomMember: (day: %s)', day, member)
-
-    if (!member) return
-
+  const uniqueMember = (member, day, type) => {
     // init
     if (member[type].length === 0) {
       member[type].push(day)
       memberStore.changeMember(member)
       return member
-    }
-
-    if (member[type].length > 0 && !member[type].includes(day)) {
+    } else if (!member[type].includes(day)) {
       if (member[type].length < restDays) {
         member[type].push(day)
         memberStore.changeMember(member)
         return member
       } else {
-        return randomMember(day, type)
+        const _member = sample(members)
+        return uniqueMember(_member)
+        // return randomMember(day, type)
       }
-    } else {
-      return randomMember(day, type)
     }
+  }
+
+  // randomMembers
+  const randomMembers = (day, type, num = 2) => {
+    const { members, restDays } = memberStore
+    const memberList = sampleSize(members, num)
+
+    console.log('randomMember: (day: %s)', day, type, memberList)
+    // check member
+    const isUnique = memberList.every(member => {
+      return (member[type].length === 0 || !member[type].includes(day) && member[type].length < restDays)
+    })
+    if (isUnique) {
+      // record
+      memberList.map(member => {
+        member[type].push(day)
+        memberStore.changeMember(member)
+      })
+      return memberList
+    }
+    return randomMembers(day, type, num)
   }
 
   // date
@@ -77,9 +88,9 @@ export default function useMember() {
     const week = calendar.reduce(
       (pre, { isCurrentMonth, weekDayText, day }) => {
         if (isCurrentMonth) {
-          const member = randomMember(day, 'rest')
-          console.log(index, member)
-          pre[weekDayText] = member?.name
+          const members = randomMembers(day, 'rest', 2)
+          console.log(index, members)
+          pre[weekDayText] = members.map(member => member.name).join(',')
         }
 
         return pre
