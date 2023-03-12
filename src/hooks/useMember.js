@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import useCalendar from './useCalendar'
 import { useMemberStore } from '../stores'
+import { sampleSize } from '../utils'
 
 /**
  * rules: 0.当月休息6/7天； 1.昨晚晚班+第二天早班；2.连续休息2天要上早班
@@ -12,7 +13,7 @@ export default function useMember() {
   // randomMember
   const randomMember = (day, type, num = 1) => {
     const { members, restDays } = memberStore
-    const member = members[Math.round(Math.random() * (members.length - 1))]
+    const member = sampleSize(members, num)
 
     console.log('randomMember: (day: %s)', day, member)
 
