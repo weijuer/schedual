@@ -2,7 +2,7 @@ import * as XLSX from 'xlsx'
 
 export default function useExcel() {
 
-    const exportExcel = () => {
+    const exportExcel = (date) => {
         // 创建工作表
         const bookData = XLSX.utils.table_to_sheet(document.getElementsByClassName('n-data-table-table')[0])
         // 创建工作簿

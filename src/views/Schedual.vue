@@ -94,29 +94,32 @@ const rowClassName = (row) => {
     </n-button>
   </n-space>
 
-  <n-data-table
-    ref="tableRef"
-    :single-line="false"
-    :columns="columns"
-    :data="data"
-    :row-class-name="rowClassName"
-  />
+  <n-data-table ref="tableRef" :single-line="false" :columns="columns" :data="data" :row-class-name="rowClassName" />
 </template>
 
 <style lang="scss" scoped>
+$calendar-bg: rgba(24, 160, 88, 0.16);
+
 .table-space {
   padding-bottom: 10px;
 }
 
-:deep(.calendar td) {
-  &:not(:first-child) {
-    text-align: end;
+:deep(.calendar) {
+
+  td {
+    &:not(:first-child) {
+      text-align: end;
+    }
+
+    background-color: $calendar-bg;
   }
 
-  // background-color: rgba(24, 160, 88, 0.16);
-
   &:hover {
-    // background-color: darken(rgba(21, 139, 76, 0.16), 15);
+
+    &,
+    >td {
+      background-color: darken($calendar-bg, 15%) !important;
+    }
   }
 }
 

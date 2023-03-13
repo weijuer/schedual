@@ -47,7 +47,9 @@ export default function useMember() {
       })
       return memberList
     }
-    return randomMembers(day, type, num)
+
+    return memberList
+    // return randomMembers(day, type, num)
   }
 
   // date
