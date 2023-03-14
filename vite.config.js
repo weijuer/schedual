@@ -20,7 +20,7 @@ export default defineConfig({
       resolvers: [AntDesignVueResolver(), NaiveUiResolver()],
     }),
     AutoImport({
-      imports: ['vue', 'vue-router'],
+      imports: ['vue', 'vue-router', 'pinia'],
     }),
   ],
 })

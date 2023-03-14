@@ -1,4 +1,3 @@
-import { computed } from 'vue'
 import useCalendar from './useCalendar'
 import { useMemberStore } from '../stores'
 import { sample, sampleSize } from '../utils'
@@ -11,45 +10,33 @@ export default function useMember() {
   const memberStore = useMemberStore()
 
   const uniqueMember = (member, day, type) => {
+
     // init
     if (member[type].length === 0) {
       member[type].push(day)
       memberStore.changeMember(member)
       return member
-    } else if (!member[type].includes(day)) {
-      if (member[type].length < restDays) {
+    }
+
+    if (!member[type].includes(day)) {
+      if (member[type].length < memberStore.restDays) {
         member[type].push(day)
         memberStore.changeMember(member)
         return member
-      } else {
-        const _member = sample(members)
-        return uniqueMember(_member)
-        // return randomMember(day, type)
       }
     }
+
+    const _member = sample(memberStore.members)
+    return uniqueMember(_member, day, type)
   }
 
   // randomMembers
   const randomMembers = (day, type, num = 2) => {
-    const { members, restDays } = memberStore
-    const memberList = sampleSize(members, num)
-
+    // 1.随机取出当天type人员(num)
+    const memberList = sampleSize(memberStore.members, num)
     console.log('randomMember: (day: %s)', day, type, memberList)
-    // check member
-    const isUnique = memberList.every(member => {
-      return (member[type].length === 0 || !member[type].includes(day) && member[type].length < restDays)
-    })
-    if (isUnique) {
-      // record
-      memberList.map(member => {
-        member[type].push(day)
-        memberStore.changeMember(member)
-      })
-      return memberList
-    }
-
-    return memberList
-    // return randomMembers(day, type, num)
+    // 2.校验人员(1.是否当天已存在；2.是否已超过type最大值)
+    return memberList.map(member => uniqueMember(member, day, type))
   }
 
   // date
@@ -91,8 +78,7 @@ export default function useMember() {
       (pre, { isCurrentMonth, weekDayText, day }) => {
         if (isCurrentMonth) {
           const members = randomMembers(day, 'rest', 2)
-          console.log(index, members)
-          pre[weekDayText] = members.map(member => member.name).join(',')
+          pre[weekDayText] = members.map(member => member.name).join(' , ')
         }
 
         return pre

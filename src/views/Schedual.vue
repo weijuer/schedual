@@ -1,8 +1,8 @@
 <script setup>
 // https://www.naiveui.com/zh-CN/light/components/space
-import { computed, ref, watch } from 'vue'
 import useExcel from '../hooks/useExcel'
 import useMember from '../hooks/useMember'
+import { useMemberStore } from '../stores'
 
 const tableRef = ref()
 const data = ref([])
@@ -10,6 +10,9 @@ const timestamp = ref(Date.now())
 
 const { exportExcel } = useExcel()
 const { getMemberData } = useMember()
+const memberStore = useMemberStore()
+// const { restDays } = storeToRefs(memberStore)
+const restDays = ref(memberStore.restDays)
 
 watch(
   timestamp,
@@ -19,6 +22,16 @@ watch(
   },
   { immediate: true }
 )
+
+// watch(
+//   restDays,
+//   (restDays) => {
+//     console.log('watch', restDays)
+//     memberStore.rest = restDays
+//     data.value = getMemberData(timestamp.value)
+//   },
+//   { immediate: true }
+// )
 
 const onMonthChange = (date) => {
   console.log('onMonthChange', date)
@@ -88,6 +101,8 @@ const rowClassName = (row) => {
     <!-- <n-dynamic-tags v-model:value="members" @create="onCreate" /> -->
 
     <month-picker v-model="timestamp" @change="onMonthChange" />
+
+    <n-input-number v-model:value="restDays" style="width: 8rem;" :min="6" :max="10" button-placement="both" />
 
     <n-button @click="exportExcel" round size="small" type="info">
       导出
