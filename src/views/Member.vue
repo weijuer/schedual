@@ -1,11 +1,12 @@
 <script setup>
 import addMemberModal from './modal/AddMemberModal.vue'
-import { useMemberStore } from '../stores'
+import { useMemberStore, useGuideStore } from '../stores'
 import { NButton } from 'naive-ui'
 
 const showModal = ref(false)
 const source = ref({})
 const memberStore = useMemberStore()
+const guideStore = useGuideStore()
 
 const createColumns = ({ onEditMember, onRemoveMember }) => {
   return [
@@ -75,27 +76,28 @@ const onPositiveClick = (model) => {
 const onNegativeClick = () => {
   showModal.value = false
 }
+
+const steps = [{
+  target: '[data-target="guide-target"]',
+  header: '提示',
+  content: '这里是新建按钮'
+}]
+
+onMounted(() => {
+  guideStore.setVisble(true)
+  guideStore.setSteps(steps)
+})
 </script>
 
 <template>
   <n-space class="top-space">
-    <n-button @click="onAdd" strong secondary round type="info">
+    <n-button data-target="guide-target" @click="onAdd" strong secondary round type="info">
       新建
     </n-button>
   </n-space>
-  <n-data-table
-    :columns="columns"
-    :data="memberStore.members"
-    :bordered="false"
-  />
-  <add-member-modal
-    :source="source"
-    v-model:show="showModal"
-    positive-text="确认"
-    negative-text="取消"
-    @positive-click="onPositiveClick"
-    @negative-click="onNegativeClick"
-  />
+  <n-data-table :columns="columns" :data="memberStore.members" :bordered="false" />
+  <add-member-modal :source="source" v-model:show="showModal" positive-text="确认" negative-text="取消"
+    @positive-click="onPositiveClick" @negative-click="onNegativeClick" />
 </template>
 
 <style lang="scss" scoped>

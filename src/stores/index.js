@@ -4,6 +4,7 @@ import piniaPersist from 'pinia-plugin-persist';
 const pinia = createPinia();
 pinia.use(piniaPersist);
 
-export { useMemberStore } from './member'
+export * from './member'
+export * from './guide'
 
 export default pinia;

@@ -6,6 +6,9 @@ import {
     CalendarPerson24Regular as CalendarPersonIcon,
     PersonCircle24Regular as PersonIcon,
 } from '@vicons/fluent'
+import { useGuideStore } from '../stores';
+
+const guideStore = useGuideStore()
 
 function renderIcon(icon) {
     return () => h(NIcon, null, { default: () => h(icon) })
@@ -68,5 +71,7 @@ const menuOptions = [
                 <router-view />
             </n-layout-content>
         </n-layout>
+
+        <guide :steps="guideStore.steps" v-model="guideStore.visible" />
     </n-config-provider>
 </template>
