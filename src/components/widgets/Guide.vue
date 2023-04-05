@@ -8,71 +8,79 @@ const props = defineProps({
     steps: {
         type: Array,
         default: () => []
+    },
+    mask: {
+        type: Boolean,
+        default: false
+    },
+    direction: {
+        type: String,
+        validator(value) {
+            return ['bottom', 'top', 'left', 'right'].indexOf(value) !== -1;
+        },
+        default: 'bottom'
     }
 })
+
 const emit = defineEmits(['update:modelValue'])
 
-const visible = computed(() => props.modelValue)
 const state = reactive({
     active: 0,
-    isFirst: computed(() => state.active === 1),
-    isLast: computed(() => state.active === props.steps.length),
-    target: computed(() => props.steps[state.active].target),
+    isFirst: computed(() => state.active === 0),
+    isLast: computed(() => state.active === props.steps.length - 1),
+    step: computed(() => props.steps[state.active])
 })
 
+console.log('guide state', state.isFirst)
+
+const targetStyle = computed(() => {
+
+    const targetDOM = document.querySelector(state.step?.target)
+    if (targetDOM) {
+        // 目标元素坐标
+        const { top, left, right, bottom, width, height } = targetDOM.getBoundingClientRect()
+
+        return {
+            top: `${top}px`,
+            left: `${left}px`,
+            width: `${width}px`,
+            height: `${height}px`,
+            // clip: `rect(${top}px, ${right}px, ${bottom}px, ${left}px)`
+        }
+    }
+})
 
 const next = () => {
-    if (state.active >= props.steps.length) {
-        visible.value = false
-        emit('update:modelValue', visible.value)
+    if (state.active >= props.steps.length - 1) {
+        emit('update:modelValue', false)
     } else {
         state.active++
-        // this.updateTarget()
     }
 }
 
 const prev = () => {
-    if (state.active == 1) return
+    if (state.active === 0) return
     state.active--
-    // this.updateTarget()
+}
+
+const skip = () => {
+    emit('update:modelValue', false)
 }
 
 provide('guide', state)
 </script>
 
 <template>
-    <section class="w-guide" v-show="visible">
-        <div class="w-guide-overlay"></div>
-        <div class="w-guide-target"></div>
+    <section class="w-guide" v-show="props.modelValue">
+        <div v-if="mask" class="w-guide-overlay"></div>
+        <div class="w-guide-target" :style="targetStyle"></div>
         <div class="w-guide-steps">
-            <slot>
-                <step v-for="(step, index) of steps" :target="step.target" :header="step.header" :content="step.content"
-                    :key="'step_' + index" @next="next()" @prev="prev()">
+            <transition name="fade">
+                <step v-bind="state.step" :direction="direction" @skip="skip()" @next="next()" @prev="prev()">
                 </step>
-            </slot>
+            </transition>
         </div>
     </section>
 </template>
 
-<style scoped lang="scss">
-.w-guide {
-
-    .w-guide-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 2020;
-    }
-
-    .w-guide-target {
-        position: absolute;
-        z-index: 2021;
-        background: transparent;
-        box-shadow: inset 0px 0px 2px 2px #4c4c4c;
-        transition: all .3s ease-out;
-    }
-}
-</style>
+<style lang="scss" src="./guide.scss" /> 

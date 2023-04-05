@@ -81,11 +81,15 @@ const steps = [{
   target: '[data-target="guide-target"]',
   header: '提示',
   content: '这里是新建按钮'
+}, {
+  target: '.router-link-exact-active',
+  header: '提示2',
+  content: '这里是菜单'
 }]
 
 onMounted(() => {
-  guideStore.setVisble(true)
   guideStore.setSteps(steps)
+  guideStore.setVisble(true)
 })
 </script>
 
