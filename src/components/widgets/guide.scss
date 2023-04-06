@@ -1,24 +1,31 @@
 $theme-bg: #00a2ff;
 $step-text-color: #fff;
 
+[data-target-highlighted] {
+    position: relative !important;
+    z-index: 2023 !important;
+}
+
 .w-guide {
 
     .w-guide-overlay {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(0, 0, 0, 0.6);
+        zoom: 1;
         z-index: 2020;
+        transition: all .3s;
     }
 
     .w-guide-target {
-        position: absolute;
+        position: fixed;
         z-index: 2021;
-        background: transparent;
+        background: #fff;
         box-shadow: inset 0px 0px 2px 2px $theme-bg;
-        transition: all .3s ease-out;
+        transition: all .3s;
     }
 }
 
@@ -79,28 +86,39 @@ $positions: top right bottom left;
 }
 
 .w-step {
-    min-width: 120px;
+    min-width: 240px;
+    max-width: 300px;
+    margin: 0;
     padding: 20px 14px;
     display: inline-block;
     position: fixed;
     z-index: 2021;
     font-size: 14px;
     line-height: 1.25;
-    // visibility: hidden;
     color: $step-text-color;
     background: $theme-bg;
     border-radius: 4px;
     transition: all .3s ease-out;
 
     &.active {
-        visibility: visible;
+        display: block;
     }
 
     .w-step__header {
+        margin-bottom: 6px;
         font-weight: 600;
+        line-height: 1.5;
+        zoom: 1;
+    }
+
+    .w-step__content {
+        line-height: 1.5;
+        font-weight: 400;
+        zoom: 1;
     }
 
     .w-step__actions {
+        margin-top: 10px;
         display: flex;
         justify-content: flex-end;
 

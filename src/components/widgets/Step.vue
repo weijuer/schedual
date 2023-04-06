@@ -59,9 +59,9 @@ const stepStyle = computed(() => {
 
   targetDOM.value = document.querySelector(props.target);
 
-  if (targetDOM.value) {
+  if (targetDOM.value && stepRef.value) {
     // 偏移量
-    const offset = 10
+    const offset = 20
     // 目标元素坐标
     const { bottom: targetBottom, left: targetLeft } = getCalculatedPosition()
     // 当前step元素坐标
@@ -70,7 +70,7 @@ const stepStyle = computed(() => {
     console.log('stepStyle', targetLeft, stepHeight)
 
     const top = `${targetBottom + offset}px`
-    const left = `${targetLeft + offset}px`
+    const left = `${targetLeft}px`
 
     return {
       top: top,
@@ -78,6 +78,7 @@ const stepStyle = computed(() => {
     }
   }
 })
+
 </script>
 
 <template>
@@ -93,7 +94,7 @@ const stepStyle = computed(() => {
     <slot name="actions">
       <div class="w-step__actions">
         <a class="w-step__actions-btn" href="javascript:;" @click="skip()">跳过</a>
-        <a class="w-step__actions-btn" v-show="!props.isFirst" href="javascript:;" @click="prev()">上一步</a>
+        <a class="w-step__actions-btn" v-show="!guide.isFirst" href="javascript:;" @click="prev()">上一步</a>
         <a class="w-step__actions-btn" href="javascript:;" @click="next()">{{ nextText }}</a>
       </div>
     </slot>

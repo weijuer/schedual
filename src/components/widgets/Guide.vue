@@ -11,14 +11,14 @@ const props = defineProps({
     },
     mask: {
         type: Boolean,
-        default: false
+        default: true
     },
     direction: {
         type: String,
         validator(value) {
             return ['bottom', 'top', 'left', 'right'].indexOf(value) !== -1;
         },
-        default: 'bottom'
+        default: 'top'
     }
 })
 
@@ -35,16 +35,21 @@ console.log('guide state', state.isFirst)
 
 const targetStyle = computed(() => {
 
+    const offset = 10
+
     const targetDOM = document.querySelector(state.step?.target)
     if (targetDOM) {
+        // 
+        targetDOM.setAttribute('data-target-highlighted', '')
+
         // 目标元素坐标
         const { top, left, right, bottom, width, height } = targetDOM.getBoundingClientRect()
 
         return {
-            top: `${top}px`,
-            left: `${left}px`,
-            width: `${width}px`,
-            height: `${height}px`,
+            top: `${top - offset * 0.5}px`,
+            left: `${left - offset * 0.5}px`,
+            width: `${width + offset}px`,
+            height: `${height + offset}px`,
             // clip: `rect(${top}px, ${right}px, ${bottom}px, ${left}px)`
         }
     }
@@ -74,7 +79,7 @@ provide('guide', state)
     <section class="w-guide" v-show="props.modelValue">
         <div v-if="mask" class="w-guide-overlay"></div>
         <div class="w-guide-target" :style="targetStyle"></div>
-        <div class="w-guide-steps">
+        <div class="w-guide-step">
             <transition name="fade">
                 <step v-bind="state.step" :direction="direction" @skip="skip()" @next="next()" @prev="prev()">
                 </step>

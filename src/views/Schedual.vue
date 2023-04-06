@@ -14,6 +14,26 @@ const memberStore = useMemberStore()
 // const { restDays } = storeToRefs(memberStore)
 const restDays = ref(memberStore.restDays)
 
+const steps = ref([{
+  target: '[data-target="guide-target-1"]',
+  header: '提示1',
+  content: '这里是新建按钮'
+}, {
+  target: '[data-target="guide-target-2"]',
+  header: '提示2',
+  content: '这里是菜单'
+}, {
+  target: '.router-link-exact-active',
+  header: '提示3',
+  content: '这里是菜单'
+}, {
+  target: '[data-target="guide-target-4"]',
+  header: '提示4',
+  content: '这里是菜单'
+}])
+
+const visible = ref(true)
+
 watch(
   timestamp,
   (timestamp) => {
@@ -100,16 +120,22 @@ const rowClassName = (row) => {
   <n-space class="table-space" justify="space-between">
     <!-- <n-dynamic-tags v-model:value="members" @create="onCreate" /> -->
 
-    <month-picker v-model="timestamp" @change="onMonthChange" />
+    <month-picker data-target="guide-target-1" v-model="timestamp" @change="onMonthChange" />
 
     <n-input-number v-model:value="restDays" style="width: 8rem;" :min="6" :max="10" button-placement="both" />
 
-    <n-button @click="exportExcel" round size="small" type="info">
+    <n-button data-target="guide-target-2" @click="exportExcel" round size="small" type="info">
       导出
     </n-button>
   </n-space>
 
   <n-data-table ref="tableRef" :single-line="false" :columns="columns" :data="data" :row-class-name="rowClassName" />
+
+  <n-button data-target="guide-target-4" @click="exportExcel" round size="small" type="info">
+    导出
+  </n-button>
+
+  <guide :steps="steps" v-model="visible" />
 </template>
 
 <style lang="scss" scoped>
